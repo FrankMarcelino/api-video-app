@@ -21,7 +21,7 @@ class UserRespository {
             if (error) {
               return res.status(400).json(error);
             }
-            res.status(200).json({ success: true });
+            res.status(200).json({ message: "Usário criado com sucesso" });
           }
         );
       });
@@ -59,7 +59,9 @@ class UserRespository {
                   expiresIn: "1d",
                 }
               );
-              return res.status(200).json({ token: token });
+              return res
+                .status(200)
+                .json({ token: token, message: "Login efetuado com sucesso" });
             }
           });
         }
