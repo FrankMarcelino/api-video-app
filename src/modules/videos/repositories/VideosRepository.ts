@@ -19,6 +19,25 @@ class VideosRepository {
       );
     });
   }
+
+  getVideos(req: Request, res: Response) {
+    const { user_id } = req.body;
+    pool.getConnection((err: any, connection: any) => {
+      connection.query(
+        `SELECT * FROM videos WHERE user_id = ?`,
+        [user_id],
+        (error: any, results: any, fields: any) => {
+          connection.release();
+          if (error) {
+            return res.status(400).json({ error: "Error ao buscar videos" });
+          }
+          return res
+            .status(200)
+            .json({ message: "busca efetuada com sucesso", videos: results });
+        }
+      );
+    });
+  }
 }
 
 export { VideosRepository };
