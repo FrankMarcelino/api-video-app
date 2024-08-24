@@ -20,8 +20,8 @@ class VideosRepository {
     });
   }
 
-  getVideos(req: Request, res: Response) {
-    const { user_id } = req.body;
+  getVideos(request: Request, res: Response) {
+    const { user_id } = request.query;
     pool.getConnection((err: any, connection: any) => {
       connection.query(
         `SELECT * FROM videos WHERE user_id = ?`,
@@ -33,7 +33,26 @@ class VideosRepository {
           }
           return res
             .status(200)
-            .json({ message: "busca efetuada com sucesso", videos: results });
+            .json({ message: "Videos encontrados", videos: results });
+        }
+      );
+    });
+  }
+
+  searchVideos(request: Request, res: Response) {
+    const { search } = request.query;
+    pool.getConnection((err: any, connection: any) => {
+      connection.query(
+        `SELECT * FROM videos WHERE title LIKE ?`,
+        [`%${search}%`],
+        (error: any, results: any, fields: any) => {
+          connection.release();
+          if (error) {
+            return res.status(400).json({ error: "Error ao buscar videos" });
+          }
+          return res
+            .status(200)
+            .json({ message: "Videos encontrados", videos: results });
         }
       );
     });
